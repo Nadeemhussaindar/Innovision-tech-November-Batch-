@@ -1,63 +1,81 @@
-const inputBox = document.querySelector(".inputField input");
-const addBtn = document.querySelector(".inputField button");
-const todoList = document.querySelector(".todoList");
-const deleteAllBtn = document.querySelector(".footer button");
+const questions = [
+  {
+      question: "What is the capital of France?",
+      answers: [
+          { text: "Paris", correct: true },
+          { text: "Berlin", correct: false },
+          { text: "Madrid", correct: false },
+          { text: "Rome", correct: false }
+      ]
+      
+  },
+  {
+      question: "Which planet is known as the Red Planet?",
+      answers: [
+          { text: "Venus", correct: false },
+          { text: "Mars", correct: true },
+          { text: "Jupiter", correct: false },
+          { text: "Saturn", correct: false }
+      ]
+  },
+  
+];
 
-inputBox.onkeyup = ()=>{
-  let userEnteredValue = inputBox.value; 
-  if(userEnteredValue.trim() != 0){ 
-    addBtn.classList.add("active"); 
-  }else{
-    addBtn.classList.remove("active"); 
-  }
+let currentQuestionIndex = 0;
+
+const questionTextElement = document.getElementById('question-text');
+const answerButtonsElement = document.getElementById('answer-buttons');
+const nextButton = document.getElementById('next-button');
+
+function startQuiz() {
+  currentQuestionIndex = 0;
+  nextButton.classList.add('hide');
+  showQuestion(questions[currentQuestionIndex]);
 }
-showTasks(); 
-addBtn.onclick = ()=>{ 
-  let userEnteredValue = inputBox.value; 
-  let getLocalStorageData = localStorage.getItem("New Todo"); 
-  if(getLocalStorageData == null){ 
-    listArray = []; 
-  }else{
-    listArray = JSON.parse(getLocalStorageData);  
-  }
-  listArray.push(userEnteredValue); 
-  localStorage.setItem("New Todo", JSON.stringify(listArray)); 
-  showTasks(); 
-  addBtn.classList.remove("active"); 
-}
-function showTasks(){
-  let getLocalStorageData = localStorage.getItem("New Todo");
-  if(getLocalStorageData == null){
-    listArray = [];
-  }else{
-    listArray = JSON.parse(getLocalStorageData); 
-  }
-  const pendingTasksNumb = document.querySelector(".pendingTasks");
-  pendingTasksNumb.textContent = listArray.length; 
-  if(listArray.length > 0){ 
-    deleteAllBtn.classList.add("active"); 
-  }else{
-    deleteAllBtn.classList.remove("active"); 
-  }
-  let newLiTag = "";
-  listArray.forEach((element, index) => {
-    newLiTag += `<li>${element}<span class="icon" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></span></li>`;
+
+function showQuestion(question) {
+  questionTextElement.innerText = question.question;
+  clearAnswerButtons();
+  question.answers.forEach(answer => {
+      const button = document.createElement('button');
+      button.innerText = answer.text;
+      button.classList.add('btn');
+      button.addEventListener('click', () => selectAnswer(answer));
+      answerButtonsElement.appendChild(button);
   });
-  todoList.innerHTML = newLiTag; 
-  inputBox.value = ""; 
 }
 
-function deleteTask(index){
-  let getLocalStorageData = localStorage.getItem("New Todo");
-  listArray = JSON.parse(getLocalStorageData);
-  listArray.splice(index, 1); 
-  localStorage.setItem("New Todo", JSON.stringify(listArray));
-  showTasks(); 
+function clearAnswerButtons() {
+  while (answerButtonsElement.firstChild) {
+      answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+  }
 }
 
-deleteAllBtn.onclick = ()=>{
-  listArray = []; //empty the array
-  localStorage.setItem("New Todo", JSON.stringify(listArray)); 
-  showTasks();
+function selectAnswer(answer) {
+  const correct = answer.correct;
+  if (correct) {
+      
+  } else {
+      
+  }
+
+  if (currentQuestionIndex < questions.length - 1) {
+      currentQuestionIndex++;
+      showQuestion(questions[currentQuestionIndex]);
+  } else {
+      
+      nextButton.innerText = 'Finish';
+      nextButton.onclick = finishQuiz;
+  }
+}
+
+function finishQuiz() {
   
 }
+
+function nextQuestion() {
+  nextButton.classList.add('hide');
+  showQuestion(questions[currentQuestionIndex]);
+}
+
+startQuiz();
